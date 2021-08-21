@@ -1,0 +1,49 @@
+{
+  "name": "nodeUserAuthApi",
+  "version": "1.0.0",
+  "description": "A user signup, verification and authentication API",
+  "main": "app.js",
+  "type": "module",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test mocha --recursive test/ --exit",
+    "dev": "NODE_ENV=development nodemon src/server.js",
+    "start": "NODE_ENV=production node src/server.js"
+  },
+  "author": "Jesse Ojih",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/jesseinvent/nodeUserAuthApi",
+    "issues": "https://github.com/jesseinvent/nodeUserAuthApi/issues"
+  },
+  "engines": {
+    "node": "15.x"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "express-mongo-sanitize": "^2.1.0",
+    "express-validator": "^6.12.1",
+    "helmet": "^4.6.0",
+    "http-status-codez": "^1.1.0",
+    "jsonwebtoken": "^8.5.1",
+    "mailgun-js": "^0.6.7",
+    "mongoose": "^5.13.3",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.6.3",
+    "otp-generator": "^2.0.1",
+    "xss-clean": "^0.1.1"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "eslint": "^7.31.0",
+    "mocha": "^8.4.0",
+    "nodemon": "^2.0.7",
+    "prettier": "2.3.2",
+    "supertest": "^6.1.3"
+  }
+}
