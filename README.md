@@ -38,6 +38,6 @@ $ npm run test
 
 > Note: 
 - Emails will only be sent when API is running in a production environment.
-- In a development environment, otps will be saved in an otps folder in the root direction.
+- In a development environment, otps will be saved in an otps folder in the root directory.
 
 ## Enjoy 😃
