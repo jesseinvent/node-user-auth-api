@@ -1,99 +1,95 @@
-import mongoose from 'mongoose'
-import generateOtp from "../utils/auth/generateOTP.js"
-import {compareString, hashString} from '../utils/auth/hash.js'
+import mongoose from "mongoose";
+import { configs } from "../config/configs.js";
+import generateOtp from "../utils/auth/generateOTP.js";
+import { compareString, hashString } from "../utils/auth/hash.js";
 
-const { model, Schema } = mongoose
+const { model, Schema } = mongoose;
 
 const userSchema = new Schema(
-
-    {
-        first_name: {
-            type: String,
-            required: true
-        },
-
-        last_name: {
-            type: String,
-            required: true
-        },
-
-        email: {
-            type: String,
-            required: true
-        },
-
-        phone_number: {
-            type: String,
-            required: true
-        },
-
-        password: {
-            type: String,
-            required: true
-        },
-
-        verification_token: {
-            type: String,
-        },
-
-        active: {
-            type: Boolean,
-            default: false
-        },
-        otp: String,
-        otp_time_expiry: Date,
+  {
+    first_name: {
+      type: String,
+      required: true,
     },
-    {
-        timestamps: true,
-        collection: 'users'
-    }
 
-)
+    last_name: {
+      type: String,
+      required: true,
+    },
 
-userSchema.pre('save', async function(next) {
+    email: {
+      type: String,
+      required: true,
+    },
 
-    if (!this.isModified('password')) {
-        return next();
-    }
+    phone_number: {
+      type: String,
+      required: true,
+    },
 
-    this.password = await hashString(this.password)
-})
+    password: {
+      type: String,
+      required: true,
+    },
 
-userSchema.methods.generateOtp = async function() {
+    verification_token: {
+      type: String,
+    },
 
-    const userOtp = generateOtp(7)
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    otp: String,
+    otp_time_expiry: Date,
+  },
+  {
+    timestamps: true,
+    collection: "users",
+  }
+);
 
-    //encrypt otp and save to DB
-    this.otp = await hashString(userOtp)
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
 
-    // save otp expiry date to DB
-    this.otp_time_expiry = Date.now() + 1000 * 60 * process.env.OTP_TIME_EXPIRY_MINUTES
+  this.password = await hashString(this.password);
+});
 
-    return userOtp
-}
+userSchema.methods.generateOtp = async function () {
+  const userOtp = generateOtp(7);
+
+  //encrypt otp and save to DB
+  this.otp = await hashString(userOtp);
+
+  // save otp expiry date to DB
+  this.otp_time_expiry =
+    Date.now() + 1000 * 60 * configs.OTP_TIME_EXPIRY_MINUTES;
+
+  return userOtp;
+};
 
 userSchema.methods.isValidPassword = async (enteredPassword, dbPassword) => {
+  const result = await compareString(enteredPassword, dbPassword);
 
-    // console.log(enteredPassword);
-    const result = await compareString(enteredPassword, dbPassword)
-
-    return result
-}
+  return result;
+};
 
 /**
  * Remove some attributes from users schema
- * 
+ *
  */
 
 userSchema.methods.toJSON = function () {
-    const userObject = this.toObject()
-    delete userObject.password;
-    delete userObject.active;
-    delete userObject.otp;
-    delete userObject.otp_time_expiry;
-    delete userObject.__v;
+  const userObject = this.toObject();
+  delete userObject.password;
+  delete userObject.active;
+  delete userObject.otp;
+  delete userObject.otp_time_expiry;
+  delete userObject.__v;
 
-    return userObject
-}
+  return userObject;
+};
 
-export default model('User', userSchema)
+export default model("User", userSchema);

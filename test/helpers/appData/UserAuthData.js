@@ -1,261 +1,254 @@
-import User from "../../../src/models/User.js"
-import { makePatchApiRequest, makePostApiRequest } from "../apiRequests.js"
+import User from "../../../src/models/User.js";
+import { makePatchApiRequest, makePostApiRequest } from "../apiRequests.js";
 
 class UserAuthData {
-  
-    email = 'jcinvent@gmail.com'
-    password = '12345789'
-    confirm_password = '12345789'
-    phone_number = '09085581247'
-    first_name = 'John'
-    last_name = 'Doe'
-    otp = 'wrongOtp'
+  email = "jcinvent@gmail.com";
+  password = "12345789";
+  confirm_password = "12345789";
+  phone_number = "09085581247";
+  first_name = "John";
+  last_name = "Doe";
+  otp = "wrongOtp";
 
-    signupUri = '/api/v1/auth/signup'
-    resendOtpUri = '/api/v1/auth/resend_otp'
-    verifyUserUri = '/api/v1/auth/verify'
-    forgotPasswordUri = '/api/v1/auth/forgot_password'
-    resetPasswordUri = '/api/v1/auth/reset_password'
-    loginUri = '/api/v1/auth/login'
+  signupUri = "/api/v1/auth/signup";
+  resendOtpUri = "/api/v1/auth/resend_otp";
+  verifyUserUri = "/api/v1/auth/verify";
+  forgotPasswordUri = "/api/v1/auth/forgot_password";
+  resetPasswordUri = "/api/v1/auth/reset_password";
+  loginUri = "/api/v1/auth/login";
 
-    getUser = () => {
+  getUser = () => {
+    return {
+      email: this.email,
+      password: this.password,
+      phone_number: this.phone_number,
+      confirm_password: this.confirm_password,
+      phone_number: this.phone_number,
+      first_name: this.first_name,
+      last_name: this.last_name,
+    };
+  };
 
-        return {
-            email: this.email,
-            password: this.password,
-            phone_number: this.phone_number,
-            confirm_password: this.confirm_password,
-            phone_number: this.phone_number,
-            first_name: this.first_name,
-            last_name: this.last_name
-        } 
-    }
+  getUserWithInvalidEmail = () => {
+    return {
+      email: "john@gmail",
+      password: this.password,
+      phone_number: this.phone_number,
+      confirm_password: this.confirm_password,
+      first_name: this.first_name,
+      last_name: this.last_name,
+    };
+  };
 
-    getUserWithInvalidEmail = () => {
-      
-        return {
-            email: 'john@gmail',
-            password: this.password,
-            phone_number: this.phone_number,
-            confirm_password: this.confirm_password,
-            first_name: this.first_name,
-            last_name: this.last_name
-        }    
-    }
+  getUserWithUnMatchedPasswords = () => {
+    return {
+      email: this.email,
+      password: this.password,
+      phone_number: this.phone_number,
+      confirm_password: "12345",
+      first_name: this.first_name,
+      last_name: this.last_name,
+    };
+  };
 
-    getUserWithUnMatchedPasswords = () => {
+  getUserWithOutFirstName = () => {
+    return {
+      email: this.email,
+      password: this.password,
+      phone_number: this.phone_number,
+      confirm_password: this.confirm_password,
+      first_name: "",
+      last_name: this.last_name,
+    };
+  };
 
-        return {
-            email: this.email,
-            password: this.password,
-            phone_number: this.phone_number,
-            confirm_password: '12345',
-            first_name: this.first_name,
-            last_name: this.last_name
-        }
-    }
+  getUserWithOutLastName = () => {
+    return {
+      email: this.email,
+      password: this.password,
+      phone_number: this.phone_number,
+      confirm_password: this.confirm_password,
+      first_name: this.first_name,
+      last_name: "",
+    };
+  };
 
-    getUserWithOutFirstName = () => {
+  getUserWithOutPhoneNumber = () => {
+    return {
+      email: this.email,
+      password: this.password,
+      // phone_number: '',
+      confirm_password: this.confirm_password,
+      first_name: this.first_name,
+      last_name: this.last_name,
+    };
+  };
 
-        return {
-            email: this.email,
-            password: this.password,
-            phone_number: this.phone_number,
-            confirm_password: this.confirm_password,
-            first_name: '',
-            last_name: this.last_name
-        }
-    }
+  /******************** ACTIONS *************************** */
 
-    getUserWithOutLastName = () => {
+  signUpWithInvalidEmail = async () => {
+    const response = await makePostApiRequest(
+      this.signupUri,
+      this.getUserWithInvalidEmail()
+    );
 
-        return {
-            email: this.email,
-            password: this.password,
-            phone_number: this.phone_number,
-            confirm_password: this.confirm_password,
-            first_name: this.first_name,
-            last_name: ''
-        }
-    }
+    return response;
+  };
 
+  signUpWithUnMatchedPasswords = async () => {
+    const response = await makePostApiRequest(
+      this.signupUri,
+      this.getUserWithUnMatchedPasswords()
+    );
 
-    getUserWithOutPhoneNumber = () => {
+    return response;
+  };
 
-        return {
-            email: this.email,
-            password: this.password,
-            // phone_number: '',
-            confirm_password: this.confirm_password,
-            first_name: this.first_name,
-            last_name: this.last_name
-        }
-    }
+  signUpWithOutFirstName = async () => {
+    const response = await makePostApiRequest(
+      this.signupUri,
+      this.getUserWithOutFirstName()
+    );
 
-    /******************** ACTIONS *************************** */
+    return response;
+  };
 
-    signUpWithInvalidEmail = async () => {
+  signUpWithOutLastName = async () => {
+    const response = await makePostApiRequest(
+      this.signupUri,
+      this.getUserWithOutLastName()
+    );
 
-        const response = await makePostApiRequest(this.signupUri, this.getUserWithInvalidEmail())
-        
-        return response
-    }
+    return response;
+  };
 
+  signUpWithOutPhoneNumber = async () => {
+    const response = await makePostApiRequest(
+      this.signupUri,
+      this.getUserWithOutPhoneNumber()
+    );
 
-    signUpWithUnMatchedPasswords = async () => {
+    return response;
+  };
 
-        const response = await makePostApiRequest(this.signupUri,this.getUserWithUnMatchedPasswords())
-        
-        return response
-    }
+  signUpWithValidDetails = async () => {
+    const response = await makePostApiRequest(this.signupUri, this.getUser());
 
-    signUpWithOutFirstName = async () => {
+    return response;
+  };
 
-        const response = await makePostApiRequest(this.signupUri,this.getUserWithOutFirstName())
-        
-        return response
-    }
+  resendOtpToUser = async () => {
+    const response = await makePatchApiRequest(this.resendOtpUri, {
+      email: this.email,
+    });
 
-    signUpWithOutLastName = async () => {
-  
-        const response = await makePostApiRequest(this.signupUri,this.getUserWithOutLastName())
-        
-        return response      
-    }
+    return response;
+  };
 
-    signUpWithOutPhoneNumber = async () => {
-  
-        const response = await makePostApiRequest(this.signupUri,this.getUserWithOutPhoneNumber())
-        
-        return response      
-    }
+  verifyUserWithOtp = async () => {
+    const response = await makePostApiRequest(this.verifyUserUri, {
+      email: this.email,
+      otp: this.otp,
+    });
 
-    signUpWithValidDetails = async () => {
+    return response;
+  };
 
-        const response = await makePostApiRequest(this.signupUri, this.getUser())
-                        
-        return response
-    }
+  forgotPasswordRequestWithValidEmail = async () => {
+    const response = await makePostApiRequest(this.forgotPasswordUri, {
+      email: this.email,
+    });
 
-    resendOtpToUser = async () => {
+    return response;
+  };
 
-        const response = await makePatchApiRequest(this.resendOtpUri, {
-            email: this.email
-        })
+  forgotPasswordRequestWithWrongEmail = async () => {
+    const response = await makePostApiRequest(this.forgotPasswordUri, {
+      email: "wrongEmail",
+    });
 
-        return response
-    }
+    return response;
+  };
 
-    verifyUserWithOtp = async () => {
-        const response = await makePostApiRequest(this.verifyUserUri, {
-            email: this.email,
-            otp: this.otp
-        })
-        
-        return response
-    }
+  resetPasswordWithInvalidEmailRequest = async () => {
+    const response = await makePatchApiRequest(this.resetPasswordUri, {
+      email: "wrongEmail",
+      password: "newPassword",
+      confirm_password: "newPassword",
+      otp: "12345",
+    });
 
-    forgotPasswordRequestWithValidEmail = async () => {
-        const response = await makePostApiRequest(this.forgotPasswordUri, {
-            email: this.email
-        })
+    return response;
+  };
 
-        return response
-    }
+  resetPasswordWithOutOtpRequest = async () => {
+    const response = await makePatchApiRequest(this.resetPasswordUri, {
+      email: "wrongEmail",
+      password: "newPassword",
+      confirm_password: "newPassword",
+    });
 
-    forgotPasswordRequestWithWrongEmail = async () => {
-        const response = await makePostApiRequest(this.forgotPasswordUri, {
-            email: 'wrongEmail'
-        })
+    return response;
+  };
 
-        return response
-    }
+  resetPasswordWithUnMatchedPasswordsRequest = async () => {
+    const response = await makePatchApiRequest(this.resetPasswordUri, {
+      email: this.email,
+      password: "newPassword",
+      confirm_password: "wrongPassword",
+      otp: "12345",
+    });
 
-    resetPasswordWithInvalidEmailRequest = async () => {
+    return response;
+  };
 
-        const response = await makePatchApiRequest(this.resetPasswordUri, {
-          email: 'wrongEmail',
-          password: 'newPassword',
-          confirm_password: 'newPassword',
-          otp: '12345'
-        })
+  resetPasswordWithWrongOtpRequest = async () => {
+    const response = await makePatchApiRequest(this.resetPasswordUri, {
+      email: this.email,
+      password: "newPassword",
+      confirm_password: "newPassword",
+      otp: "12345",
+    });
 
-        return response
-    }
+    return response;
+  };
 
-    resetPasswordWithOutOtpRequest = async () => {
+  loginWithOutUsernameAndPassword = async () => {
+    const response = await makePostApiRequest(this.loginUri);
 
-        const response = await makePatchApiRequest(this.resetPasswordUri, {
-          email: 'wrongEmail',
-          password: 'newPassword',
-          confirm_password: 'newPassword',
-        })
+    return response;
+  };
 
-        return response
-    }
+  loginWithWrongPassword = async () => {
+    const response = await makePostApiRequest(this.loginUri, {
+      email: this.email,
+      password: "wrongPassword",
+    });
 
-    resetPasswordWithUnMatchedPasswordsRequest = async () => {
+    return response;
+  };
 
-        const response = await makePatchApiRequest(this.resetPasswordUri, {
-            email: this.email,
-            password: 'newPassword',
-            confirm_password: 'wrongPassword',
-            otp: '12345'
-          })  
+  loginWithValidDetails = async () => {
+    const response = await makePostApiRequest(this.loginUri, {
+      email: this.email,
+      password: this.password,
+    });
 
-        return response
-    }
+    return response;
+  };
 
-    resetPasswordWithWrongOtpRequest = async () => {
+  makeActive = async () => {
+    await User.findOneAndUpdate(
+      {
+        email: this.email,
+      },
+      {
+        active: true,
+      }
+    );
 
-        const response = await makePatchApiRequest(this.resetPasswordUri, {
-            email: this.email,
-            password: 'newPassword',
-            confirm_password: 'newPassword',
-            otp: '12345'
-          })  
-
-        return response
-    }
-
-    loginWithOutUsernameAndPassword = async () => {
-
-        const response = await makePostApiRequest(this.loginUri)
-
-        return response
-    }
-
-    loginWithWrongPassword = async () => {
-
-        const response = await makePostApiRequest(this.loginUri, {
-            email: this.email,
-            password: 'wrongPassword'
-        })
-
-        return response
-    }
-
-    loginWithValidDetails= async () => {
-
-        const response = await makePostApiRequest(this.loginUri, {
-            email: this.email,
-            password: this.password
-        })
-
-        return response
-    }
-
-    makeActive = async () => {
-
-       await User.findOneAndUpdate({
-                    email: this.email
-                }, {
-                    active: true
-                })
-
-        return true
-    }
-
+    return true;
+  };
 }
 
 export default UserAuthData;

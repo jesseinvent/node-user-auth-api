@@ -1,42 +1,37 @@
-import { sendProvideEmailError, sendRequestCouldNotBeCompletedError, sendUserAccountNotAvailableError } from "../../helpers/commonAppErrors.js";
+import {
+  sendProvideEmailError,
+  sendRequestCouldNotBeCompletedError,
+  sendUserAccountNotAvailableError,
+} from "../../helpers/commonAppErrors.js";
 import User from "../../models/User.js";
-import { AppError } from "../../utils/AppError.js";
 import asyncHandler from "../../utils/asyncHandler.js";
 import sendOtpToUser from "../../utils/auth/sendOtpToUser.js";
-import sendSuccessApiResponse from "../../utils/sendSuccessApiResponse.js";
+import sendSuccessApiResponse from "../../utils/responses/sendSuccessApiResponse.js";
 
+export default asyncHandler(async (req, res, next) => {
+  const { email } = req.body;
 
-export default asyncHandler( async(req, res, next) => {
+  if (!email) {
+    next(sendProvideEmailError(res));
+  }
 
-    const { email } = req.body
+  const user = await User.findOne({ email });
 
-    if(!email) {
-        next(
-            sendProvideEmailError(res)
-        ) 
-    }
+  if (!user) {
+    next(sendUserAccountNotAvailableError(res));
+  }
 
-    const user = await User.findOne({ email })
+  const otp = await user.generateOtp();
 
-    if(!user) {
-        next(
-            sendUserAccountNotAvailableError(res)
-        ) 
-    }
+  if (!(await user.save())) {
+    next(sendRequestCouldNotBeCompletedError(res));
+  }
 
-    const otp =  await user.generateOtp()
+  await sendOtpToUser(email, user.first_name, otp, "resend");
 
-    if(!(await user.save())) {
-       next(
-            sendRequestCouldNotBeCompletedError(res)
-       ) 
-    }
-
-    await sendOtpToUser(email, user.first_name, otp, "resend")
-
-    return sendSuccessApiResponse(res, { 
-        statusCode: 200, 
-        message: ["OTP successfully resent 😀"],
-        data : {}
-    })
-})
+  return sendSuccessApiResponse(res, {
+    statusCode: 200,
+    message: ["OTP successfully resent 😀"],
+    data: {},
+  });
+});

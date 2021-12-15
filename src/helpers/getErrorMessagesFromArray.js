@@ -1,12 +1,9 @@
-
 export default (errorMessagesObject = {}) => {
+  const messages = [];
 
-    const messages = []
+  errorMessagesObject.forEach((obj) => {
+    messages.push(obj.msg);
+  });
 
-    errorMessagesObject.forEach(obj => {
-        messages.push(obj.msg)
-    });
-
-    return messages
-
-}
+  return messages;
+};

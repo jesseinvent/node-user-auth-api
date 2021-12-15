@@ -1,52 +1,55 @@
-import express, { json } from 'express'
-import dotenv from 'dotenv'
-import helmet from 'helmet'
-import routes from './routes/v1/index.js'
-import sanitizer from 'express-mongo-sanitize'
-import xss from 'xss-clean'
-import morgan from 'morgan'
-import cors from 'cors'
-import { AppError } from './utils/AppError.js'
-import sendSuccessApiResponse from './utils/sendSuccessApiResponse.js'
-import connectDatabase from './DB/index.js'
-
-dotenv.config()
+import express, { json } from "express";
+import helmet from "helmet";
+import routes from "./routes/v1/index.js";
+import sanitizer from "express-mongo-sanitize";
+import xss from "xss-clean";
+import morgan from "morgan";
+import cors from "cors";
+import connectDatabase from "./config/database.js";
+import responseTime from "response-time";
+import { configs } from "./config/configs.js";
+import { handleError, AppError } from "./utils/error/AppError.js";
+import sendSuccessApiResponse from "./utils/responses/sendSuccessApiResponse.js";
 
 // Establish connection to DB
-connectDatabase()
+connectDatabase();
 
-const app = express()
+const app = express();
 
-app.use(morgan("combined"))
+if (configs.NODE_ENV === "development") app.use(morgan("combined"));
+
+app.use(responseTime());
 
 // Express body parsers
-app.use(json())
+app.use(json());
 
 // CORS middleware
-app.use(cors())
+app.use(cors());
 
 // MongoDB santizer
-app.use(sanitizer())
+app.use(sanitizer());
 
 // xss clean
-app.use(xss())
+app.use(xss());
 
-app.use(helmet())
+app.use(helmet());
 
-app.get('/', (req, res, next) => {
-    return sendSuccessApiResponse(res, {
-        statusCode: 200,
-        message: "Welcome to User Auth API 😁",
-        data : {}
-    })
-})
+app.get("/", (req, res, next) => {
+  return sendSuccessApiResponse(res, {
+    statusCode: 200,
+    message: "Welcome to User Auth API 😁",
+    data: {},
+  });
+});
 
-app.use('/api/v1', routes)
+app.use("/api/v1", routes);
 
-app.all('*', (req, res, next) => {
-    next(
-       new AppError(res, 404, 'Invalid Route! 🙄')
-    )
-})
+app.all("*", (req, res, next) => {
+  next(new AppError(404, "Invalid Route! 🙄"));
+});
 
-export default app
+// Global Error hanlder
+app.use((err, req, res, next) => {
+  handleError(res, err);
+});
+export default app;

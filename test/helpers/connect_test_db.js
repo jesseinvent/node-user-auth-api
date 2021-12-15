@@ -1,16 +1,17 @@
-import  mongoose from "mongoose";
+import mongoose from "mongoose";
+import { configs } from "../../src/config/configs.js";
+import logger from "../../src/utils/logger.js";
 
 export default () => {
-
-    mongoose.connect(process.env.DB_TEST_URL, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
+  mongoose
+    .connect(configs.DB_TEST_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
     })
     .then(() => {
-        console.log('Connected to test DB');
+      logger.info("Connected to test DB");
     })
-    .catch(err => {
-        console.error(err);
+    .catch((err) => {
+      logger.error(err.name, err.message);
     });
-
-}
+};

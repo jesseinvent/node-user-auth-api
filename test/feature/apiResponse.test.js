@@ -1,6 +1,4 @@
-import request from 'supertest'
-import { assert } from 'chai'
+import request from "supertest";
+import { assert } from "chai";
 
-describe('api response test', () => {
-
-})
+describe("api response test", () => {});

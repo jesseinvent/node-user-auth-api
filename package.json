@@ -36,6 +36,8 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.6.3",
     "otp-generator": "^2.0.1",
+    "response-time": "^2.3.2",
+    "winston": "^3.3.3",
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
@@ -43,7 +45,7 @@
     "eslint": "^7.31.0",
     "mocha": "^8.4.0",
     "nodemon": "^2.0.7",
-    "prettier": "2.3.2",
+    "prettier": "^2.3.2",
     "supertest": "^6.1.3"
   }
 }

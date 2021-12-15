@@ -1,12 +1,10 @@
-
 export default (otpExpiryTime) => {
-      
-    const now = Date.now();
-    const otpDate = new Date(otpExpiryTime).getTime()
+  const now = Date.now();
+  const otpDate = new Date(otpExpiryTime).getTime();
 
-    if (otpDate < now) {
-        return true
-    }
+  if (otpDate < now) {
+    return true;
+  }
 
-    return false
-}
+  return false;
+};
