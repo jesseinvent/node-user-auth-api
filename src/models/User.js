@@ -55,6 +55,8 @@ userSchema.pre("save", async function (next) {
   }
 
   this.password = await hashString(this.password);
+
+  return next();
 });
 
 userSchema.methods.generateOtp = async function () {
