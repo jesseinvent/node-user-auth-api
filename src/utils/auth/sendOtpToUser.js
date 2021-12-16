@@ -1,8 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { configs } from "../../config/configs.js";
+import { sendEmail } from "../../services/emailService.js";
 import logger from "../logger.js";
-import sendEmail from "../sendEmail.js";
 
 export default async (email, name, otp, type = "newUser") => {
   let message;
